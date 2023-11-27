@@ -1,26 +1,36 @@
 pipeline {
     agent any
+
     stages {
-        stage ('build docker image') {
+        stage ('SCM') {
             steps {
-                sh '/usr/bin/docker image build -t <docker hub pallavi203/mywebsite .'
+                git 'https://github.com/C2-80405/lab-exam.git'
             }
         }
         stage ('docker login') {
             steps {
-                sh 'ehcho dckr_pat_3XIhJIxZnYe6QkVi-gZC2eKKIYQ | /usr/bin/docker login -u pallavi203 --password-stdin'
+                sh 'echo dckr_pat_3XIhJIxZnYe6QkVi-gZC2eKKIYQ | /usr/bin/docker login -u pallavi203 --password-stdin'
             }
         }
-        stage ('push docker image') {
+        stage ('docker build image') {
             steps {
-                sh '/usr/bin/docker image push pallavi203/mywebsite'
+                sh '/usr/bin/docker build -t pallavi203/mywebsite .'
             }
         }
-        stage ('reload docker service') {
+        stage ('docker image push') {
             steps {
-                sh '/usr/bin/docker service update --image pallavi203/mywebsite --force myservice'
+                sh '/usr/bin/docker push pallavi203/mywebsite'
             }
         }
-
+        stage ('docker remove service') {
+            steps {
+                sh '/usr/bin/docker service rm myservice'
+            }
+        }
+        stage ('docker create service') {
+            steps {
+                sh '/usr/bin/docker service create --name myservice -p 9876:80 --replicas 5 pallavi203/mywebsite'
+            }
+        }
     }
 }
