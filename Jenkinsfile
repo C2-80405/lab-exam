@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage ('build docker image') {
             steps {
-                sh '/usr/bin/docker image build -t <docker hub pallavi203/jenkinsdemo .'
+                sh '/usr/bin/docker image build -t <docker hub pallavi203/mywebsite .'
             }
         }
         stage ('docker login') {
@@ -13,12 +13,12 @@ pipeline {
         }
         stage ('push docker image') {
             steps {
-                sh '/usr/bin/docker image push pallavi203/jenkinsdemo'
+                sh '/usr/bin/docker image push pallavi203/mywebsite'
             }
         }
         stage ('reload docker service') {
             steps {
-                sh '/usr/bin/docker service update --image pallavi203/jenkinsdemo --force myservice'
+                sh '/usr/bin/docker service update --image pallavi203/mywebsite --force myservice'
             }
         }
 
